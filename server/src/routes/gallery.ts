@@ -26,7 +26,7 @@ adminGalleryRouter.get("/", async (_req, res, next) => {
 });
 
 const gallerySchema = z.object({
-  order: z.number().int().default(0),
+  order: z.number().int(),
   category: z.string().min(1),
   labelEn: z.string().min(1),
   labelKa: z.string().min(1),
@@ -36,7 +36,7 @@ const gallerySchema = z.object({
 
 adminGalleryRouter.post("/", async (req, res, next) => {
   try {
-    const data = gallerySchema.parse(req.body);
+    const data = gallerySchema.parse({ order: 0, ...req.body });
     const row = await prisma.galleryItem.create({ data });
     res.status(201).json(row);
   } catch (err) {

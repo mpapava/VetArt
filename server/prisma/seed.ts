@@ -93,12 +93,12 @@ const doctors = [
 ];
 
 const gallery = [
-  { order: 1, category: "patients", labelEn: "Dogs", labelKa: "ძაღლები", labelRu: "Собаки" },
-  { order: 2, category: "patients", labelEn: "Cats", labelKa: "კატები", labelRu: "Кошки" },
-  { order: 3, category: "patients", labelEn: "Birds", labelKa: "ფრინველები", labelRu: "Птицы" },
-  { order: 4, category: "patients", labelEn: "Exotic Animals", labelKa: "ეგზოტიკური ცხოველები", labelRu: "Экзотические животные" },
+  { order: 1, category: "dog", labelEn: "Dogs", labelKa: "ძაღლები", labelRu: "Собаки" },
+  { order: 2, category: "cat", labelEn: "Cats", labelKa: "კატები", labelRu: "Кошки" },
+  { order: 3, category: "bird", labelEn: "Birds", labelKa: "ფრინველები", labelRu: "Птицы" },
+  { order: 4, category: "exotic", labelEn: "Exotic Animals", labelKa: "ეგზოტიკური ცხოველები", labelRu: "Экзотические животные" },
   { order: 5, category: "clinic", labelEn: "Clinic", labelKa: "კლინიკა", labelRu: "Клиника" },
-  { order: 6, category: "clinic", labelEn: "Surgery", labelKa: "ქირურგია", labelRu: "Хирургия" },
+  { order: 6, category: "surgery", labelEn: "Surgery", labelKa: "ქირურგია", labelRu: "Хирургия" },
 ];
 
 const blogPosts = [

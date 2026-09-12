@@ -26,7 +26,7 @@ adminDoctorsRouter.get("/", async (_req, res, next) => {
 });
 
 const doctorSchema = z.object({
-  order: z.number().int().default(0),
+  order: z.number().int(),
   roleEn: z.string().min(1),
   roleKa: z.string().min(1),
   roleRu: z.string().min(1),
@@ -37,12 +37,12 @@ const doctorSchema = z.object({
   descKa: z.string().min(1),
   descRu: z.string().min(1),
   photoUrl: z.string().nullable().optional(),
-  active: z.boolean().default(true),
+  active: z.boolean(),
 });
 
 adminDoctorsRouter.post("/", async (req, res, next) => {
   try {
-    const data = doctorSchema.parse(req.body);
+    const data = doctorSchema.parse({ order: 0, active: true, ...req.body });
     const row = await prisma.doctor.create({ data });
     res.status(201).json(row);
   } catch (err) {

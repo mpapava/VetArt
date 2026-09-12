@@ -26,7 +26,7 @@ adminServicesRouter.get("/", async (_req, res, next) => {
 });
 
 const serviceSchema = z.object({
-  order: z.number().int().default(0),
+  order: z.number().int(),
   icon: z.string().min(1),
   titleEn: z.string().min(1),
   titleKa: z.string().min(1),
@@ -34,12 +34,12 @@ const serviceSchema = z.object({
   descEn: z.string().min(1),
   descKa: z.string().min(1),
   descRu: z.string().min(1),
-  active: z.boolean().default(true),
+  active: z.boolean(),
 });
 
 adminServicesRouter.post("/", async (req, res, next) => {
   try {
-    const data = serviceSchema.parse(req.body);
+    const data = serviceSchema.parse({ order: 0, active: true, ...req.body });
     const row = await prisma.service.create({ data });
     res.status(201).json(row);
   } catch (err) {

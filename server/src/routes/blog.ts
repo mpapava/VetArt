@@ -59,12 +59,12 @@ const blogSchema = z.object({
   bodyKa: z.string().min(1),
   bodyRu: z.string().min(1),
   coverImageUrl: z.string().nullable().optional(),
-  published: z.boolean().default(true),
+  published: z.boolean(),
 });
 
 adminBlogRouter.post("/", async (req, res, next) => {
   try {
-    const data = blogSchema.parse(req.body);
+    const data = blogSchema.parse({ published: true, ...req.body });
     const existing = await prisma.blogPost.findUnique({ where: { slug: data.slug } });
     if (existing) throw new ApiError(409, "A post with this slug already exists");
     const row = await prisma.blogPost.create({ data });

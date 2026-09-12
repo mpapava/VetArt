@@ -26,19 +26,19 @@ adminTestimonialsRouter.get("/", async (_req, res, next) => {
 });
 
 const testimonialSchema = z.object({
-  order: z.number().int().default(0),
+  order: z.number().int(),
   authorName: z.string().min(1),
   petName: z.string().nullable().optional(),
-  rating: z.number().int().min(1).max(5).default(5),
+  rating: z.number().int().min(1).max(5),
   quoteEn: z.string().nullable().optional(),
   quoteKa: z.string().nullable().optional(),
   quoteRu: z.string().nullable().optional(),
-  published: z.boolean().default(true),
+  published: z.boolean(),
 });
 
 adminTestimonialsRouter.post("/", async (req, res, next) => {
   try {
-    const data = testimonialSchema.parse(req.body);
+    const data = testimonialSchema.parse({ order: 0, rating: 5, published: true, ...req.body });
     const row = await prisma.testimonial.create({ data });
     res.status(201).json(row);
   } catch (err) {
