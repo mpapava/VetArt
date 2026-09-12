@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model Service {
+  id        String   @id @default(cuid())
+  order     Int      @default(0)
+  icon      String
+  titleEn   String
+  titleKa   String
+  titleRu   String
+  descEn    String
+  descKa    String
+  descRu    String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Doctor {
+  id        String   @id @default(cuid())
+  order     Int      @default(0)
+  roleEn    String
+  roleKa    String
+  roleRu    String
+  titleEn   String
+  titleKa   String
+  titleRu   String
+  descEn    String
+  descKa    String
+  descRu    String
+  photoUrl  String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GalleryItem {
+  id        String   @id @default(cuid())
+  order     Int      @default(0)
+  category  String
+  labelEn   String
+  labelKa   String
+  labelRu   String
+  imageUrl  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BlogPost {
+  id            String    @id @default(cuid())
+  slug          String    @unique
+  tagEn         String
+  tagKa         String
+  tagRu         String
+  titleEn       String
+  titleKa       String
+  titleRu       String
+  excerptEn     String
+  excerptKa     String
+  excerptRu     String
+  bodyEn        String
+  bodyKa        String
+  bodyRu        String
+  coverImageUrl String?
+  published     Boolean   @default(true)
+  publishedAt   DateTime  @default(now())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Testimonial {
+  id         String   @id @default(cuid())
+  order      Int      @default(0)
+  authorName String
+  petName    String?
+  rating     Int      @default(5)
+  quoteEn    String?
+  quoteKa    String?
+  quoteRu    String?
+  published  Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model PageContent {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  dataEn    Json
+  dataKa    Json
+  dataRu    Json
+  updatedAt DateTime @updatedAt
+}
+
+model Settings {
+  id               Int      @id @default(1)
+  phone            String
+  email            String
+  addressEn        String
+  addressKa        String
+  addressRu        String
+  facebookUrl      String
+  mapQuery         String
+  followerCount    String
+  recommendPercent String
+  reviewCount      String
+  updatedAt        DateTime @updatedAt
+}
+
+enum RequestStatus {
+  NEW
+  CONTACTED
+  DONE
+}
+
+model AppointmentRequest {
+  id             String        @id @default(cuid())
+  name           String
+  phone          String
+  petName        String
+  service        String
+  preferredDate  String?
+  preferredTime  String?
+  notes          String?
+  status         RequestStatus @default(NEW)
+  createdAt      DateTime      @default(now())
+}
+
+model ContactMessage {
+  id        String        @id @default(cuid())
+  name      String
+  phone     String
+  message   String
+  status    RequestStatus @default(NEW)
+  createdAt DateTime      @default(now())
+}
