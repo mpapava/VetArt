@@ -5,9 +5,7 @@ export default function Footer() {
   return (
     <footer>
       <div className="footer-inner">
-        <div className="footer-logo">
-          Vet<b>Art</b>
-        </div>
+        <img src={`${import.meta.env.BASE_URL}brand/logo-full.png`} alt="VetArt" className="footer-logo-img" />
         <div className="footer-note">
           &copy; 2026 {t("footer.rights")} &middot; {t("footer.builtBy")}{" "}
           <a href="https://www.papava.ge" target="_blank" rel="noopener">

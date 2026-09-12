@@ -42,6 +42,29 @@ export default function Login() {
         <button type="submit" className="btn btn-primary" disabled={busy} style={{ width: "100%", justifyContent: "center" }}>
           {busy ? "Signing in…" : "Sign In"}
         </button>
+
+        <div className="admin-demo-box">
+          <div className="admin-demo-label">Demo access (temporary)</div>
+          <div className="admin-demo-row">
+            <span>Email</span>
+            <code>admin@vetart.clinic</code>
+          </div>
+          <div className="admin-demo-row">
+            <span>Password</span>
+            <code>ukWnc82GGjRBfkKD</code>
+          </div>
+          <button
+            type="button"
+            className="btn btn-outline"
+            style={{ width: "100%", justifyContent: "center", marginTop: 8 }}
+            onClick={() => {
+              setEmail("admin@vetart.clinic");
+              setPassword("ukWnc82GGjRBfkKD");
+            }}
+          >
+            Fill demo credentials
+          </button>
+        </div>
       </form>
     </div>
   );

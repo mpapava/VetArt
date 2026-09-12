@@ -70,11 +70,8 @@ export default function Home() {
             )}
           </div>
           <div className="hero-art">
-            <div className="hero-badge">
-              <svg viewBox="0 0 48 48" fill="none">
-                <path d="M24 40s-13-8.1-17.6-15.8C3.5 18.7 5.6 12.4 12 11.2c3.6-.7 7 .8 9.2 3.5 2.2-2.7 5.6-4.2 9.2-3.5 6.4 1.2 8.5 7.5 5.6 13-4.6 7.7-17.6 15.8-17.6 15.8Z" stroke="#8fd13f" strokeWidth={1.6} strokeLinejoin="round" />
-                <path d="M14 24h4l2.4-4.8L24 27l2.4-3h4.6" stroke="#8fd13f" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+            <div className="brand-lockup-frame">
+              <img src={`${import.meta.env.BASE_URL}brand/logo-full.png`} alt="VetArt — Veterinary Clinic" />
             </div>
           </div>
         </div>

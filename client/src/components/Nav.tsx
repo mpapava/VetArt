@@ -2,7 +2,6 @@ import { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { useLang } from "../i18n/LangContext";
 import { useSettings, telHref } from "../api/SettingsContext";
-import { LogoMark } from "./Icons";
 import type { Lang } from "../i18n/dictionary";
 
 const NAV_ITEMS: { to: string; key: string }[] = [
@@ -23,8 +22,7 @@ export default function Nav() {
   return (
     <nav className="nav">
       <Link to="/" className="nav-logo" onClick={() => setOpen(false)}>
-        <LogoMark />
-        Vet<b>Art</b>
+        <img src={`${import.meta.env.BASE_URL}brand/logo-full.png`} alt="VetArt" className="nav-logo-img" />
       </Link>
       <div className="nav-right">
         {settings && (

@@ -60,12 +60,6 @@ export function Icon({ name, ...p }: IconProps & { name: string }) {
   return <Cmp {...p} />;
 }
 
-export function LogoMark({ size = 30 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 48 48" aria-hidden="true">
-      <circle cx="24" cy="24" r="23" fill="#0e1309" stroke="#34402b" />
-      <path d="M24 34s-8.5-5.3-11.5-10.3C10.6 20 12 15.8 16 15c2.4-.5 4.6.5 6 2.3 1.4-1.8 3.6-2.8 6-2.3 4 .8 5.4 5 3.5 8.7C28.5 28.7 24 34 24 34Z" fill="none" stroke="#8fd13f" strokeWidth={2.1} strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M18 24h3l1.6-3.2L25 26l1.6-2h3.4" fill="none" stroke="#8fd13f" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
+// Brand mark and wordmark are the clinic's real logo artwork, served as
+// static images from /brand/ (see components/Nav.tsx, Footer.tsx, pages/Home.tsx)
+// rather than redrawn as SVG.
