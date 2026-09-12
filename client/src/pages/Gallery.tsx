@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLang, useField, usePageData } from "../i18n/LangContext";
 import { useApi } from "../api/hooks";
 import { getContent, getGallery, resolveAssetUrl } from "../api/client";
@@ -21,6 +21,13 @@ export default function Gallery() {
 
   const [openId, setOpenId] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<string | null>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (openId && panelRef.current) {
+      panelRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [openId]);
 
   if (!content) return null;
 
@@ -58,7 +65,7 @@ export default function Gallery() {
             const cat = categories?.find((c) => c.id === openId);
             if (!cat) return null;
             return (
-              <div className="album-panel">
+              <div className="album-panel" ref={panelRef}>
                 <h3>{field(cat, "label")}</h3>
                 {cat.photos.length === 0 ? (
                   <p className="admin-empty">No photos in this album yet.</p>

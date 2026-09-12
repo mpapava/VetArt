@@ -16,7 +16,11 @@
       "Bash(\"/e/Program Files/PuTTY/plink.exe\" -ssh -batch -pw 'Lepape123' root@161.97.117.150 \"cd /var/www/vetart/server && pm2 restart vetart-api && sleep 1 && curl -s http://localhost:3003/api/health\")",
       "Bash(\"/e/Program Files/PuTTY/plink.exe\" -ssh -batch -pw 'Lepape123' root@161.97.117.150 \"cd /var/www/papava.ge/projects/vetart/assets && rm -f index-CxPROrSL.js index-7YD6vGOp.css && ls\")",
       "Bash(curl -s -o /dev/null -w \"gallery page: %{http_code}\\\\n\" https://www.papava.ge/projects/vetart/gallery)",
-      "Bash(curl -s https://www.papava.ge/projects/vetart/api/gallery)"
+      "Bash(curl -s https://www.papava.ge/projects/vetart/api/gallery)",
+      "Bash(curl -sI https://www.papava.ge/projects/vetart/)",
+      "Bash(\"/e/Program Files/PuTTY/pscp.exe\" -pw 'Lepape123' -batch assets/*.js root@161.97.117.150:/var/www/papava.ge/projects/vetart/assets/)",
+      "Bash(\"/e/Program Files/PuTTY/pscp.exe\" -pw 'Lepape123' -batch index.html root@161.97.117.150:/var/www/papava.ge/projects/vetart/)",
+      "Bash(\"/e/Program Files/PuTTY/plink.exe\" -ssh -batch -pw 'Lepape123' root@161.97.117.150 \"cd /var/www/papava.ge/projects/vetart/assets && rm -f index-DXozjQrE.js && ls\")"
     ]
   }
 }
