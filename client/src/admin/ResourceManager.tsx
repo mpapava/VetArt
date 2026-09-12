@@ -9,6 +9,8 @@ export interface FieldConfig {
   langed?: boolean;
   options?: { value: string; label: string }[];
   placeholder?: string;
+  /** For type "image": also store the generated thumbnail URL under this field on upload. */
+  thumbKey?: string;
 }
 
 interface CrudApi<T> {
@@ -73,11 +75,11 @@ export default function ResourceManager<T extends { id: string }>({ title, api, 
     setEditing((e) => (e ? { ...e, [key]: value } : e));
   }
 
-  async function handleUpload(key: string, file: File) {
-    setUploadingKey(key);
+  async function handleUpload(field: FieldConfig, file: File) {
+    setUploadingKey(field.key);
     try {
-      const { url } = await adminUpload(file);
-      updateField(key, url);
+      const { url, thumbUrl } = await adminUpload(file);
+      setEditing((e) => (e ? { ...e, [field.key]: url, ...(field.thumbKey ? { [field.thumbKey]: thumbUrl } : {}) } : e));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed");
     } finally {
@@ -185,7 +187,8 @@ export default function ResourceManager<T extends { id: string }>({ title, api, 
                 );
               }
               if (f.type === "image") {
-                const url = resolveAssetUrl(value as string | undefined);
+                const previewSrc = f.thumbKey ? (editing[f.thumbKey] as string | undefined) || value : value;
+                const url = resolveAssetUrl(previewSrc as string | undefined);
                 return (
                   <div className="field" key={f.key}>
                     <label>{f.label}</label>
@@ -195,7 +198,7 @@ export default function ResourceManager<T extends { id: string }>({ title, api, 
                       accept="image/*"
                       onChange={(e) => {
                         const file = e.target.files?.[0];
-                        if (file) handleUpload(f.key, file);
+                        if (file) handleUpload(f, file);
                       }}
                     />
                     {uploadingKey === f.key && <span className="admin-uploading">Uploading…</span>}
@@ -251,9 +254,9 @@ export default function ResourceManager<T extends { id: string }>({ title, api, 
             {list.map((item) => (
               <tr key={item.id}>
                 {columns.map((c) => (
-                  <td key={c.key}>{String((item as Record<string, unknown>)[c.key] ?? "")}</td>
+                  <td key={c.key} data-label={c.label}>{String((item as Record<string, unknown>)[c.key] ?? "")}</td>
                 ))}
-                <td className="admin-row-actions">
+                <td className="admin-row-actions" data-label="">
                   <button className="btn-link" onClick={() => startEdit(item)}>
                     Edit
                   </button>

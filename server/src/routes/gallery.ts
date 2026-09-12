@@ -2,6 +2,7 @@ import { Router } from "express";
 import { z } from "zod";
 import { prisma } from "../lib/prisma.js";
 import { ApiError } from "../middleware/errorHandler.js";
+import { deleteUploadedFile } from "../lib/upload.js";
 
 // ---- Public: categories with their photos nested ----
 export const galleryRouter = Router();
@@ -88,6 +89,7 @@ adminGalleryPhotosRouter.get("/", async (req, res, next) => {
 const photoSchema = z.object({
   categoryId: z.string().min(1),
   imageUrl: z.string().min(1),
+  thumbUrl: z.string().nullable().optional(),
   order: z.number().int(),
 });
 
@@ -115,7 +117,8 @@ adminGalleryPhotosRouter.put("/:id", async (req, res, next) => {
 
 adminGalleryPhotosRouter.delete("/:id", async (req, res, next) => {
   try {
-    await prisma.galleryPhoto.delete({ where: { id: req.params.id } });
+    const photo = await prisma.galleryPhoto.delete({ where: { id: req.params.id } });
+    deleteUploadedFile(photo.imageUrl);
     res.status(204).end();
   } catch (err) {
     next(err instanceof Error ? new ApiError(404, "Photo not found") : err);

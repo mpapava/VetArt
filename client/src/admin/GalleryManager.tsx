@@ -51,8 +51,8 @@ function PhotosTab() {
     try {
       let order = (shown?.length ?? 0) + 1;
       for (const file of Array.from(files)) {
-        const { url } = await adminUpload(file);
-        await adminCreateGalleryPhoto({ categoryId: activeCategoryId, imageUrl: url, order: order++ });
+        const { url, thumbUrl } = await adminUpload(file);
+        await adminCreateGalleryPhoto({ categoryId: activeCategoryId, imageUrl: url, thumbUrl, order: order++ });
       }
       await refresh();
     } catch (err) {
@@ -96,7 +96,7 @@ function PhotosTab() {
       <div className="admin-photo-grid">
         {shown?.map((p) => (
           <div className="admin-photo-tile" key={p.id}>
-            <img src={resolveAssetUrl(p.imageUrl)} alt="" />
+            <img src={resolveAssetUrl(p.thumbUrl || p.imageUrl)} alt="" />
             <button className="btn-link danger" onClick={() => handleDelete(p.id)}>
               Delete
             </button>

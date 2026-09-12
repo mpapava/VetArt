@@ -41,7 +41,8 @@ model Doctor {
   descEn    String
   descKa    String
   descRu    String
-  photoUrl  String?
+  photoUrl      String?
+  photoThumbUrl String?
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -65,6 +66,7 @@ model GalleryPhoto {
   categoryId String
   category   GalleryCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   imageUrl   String
+  thumbUrl   String?
   order      Int             @default(0)
   createdAt  DateTime        @default(now())
 }
@@ -85,6 +87,7 @@ model BlogPost {
   bodyKa        String
   bodyRu        String
   coverImageUrl String?
+  coverThumbUrl String?
   published     Boolean   @default(true)
   publishedAt   DateTime  @default(now())
   createdAt     DateTime  @default(now())

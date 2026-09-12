@@ -41,20 +41,20 @@ export default function MessagesManager() {
         <tbody>
           {list?.map((m) => (
             <tr key={m.id} className={m.status === "NEW" ? "admin-row-new" : ""}>
-              <td>{new Date(m.createdAt).toLocaleString()}</td>
-              <td>{m.name}</td>
-              <td>
+              <td data-label="Date">{new Date(m.createdAt).toLocaleString()}</td>
+              <td data-label="Name">{m.name}</td>
+              <td data-label="Phone">
                 <a href={`tel:${m.phone}`}>{m.phone}</a>
               </td>
-              <td>{m.message}</td>
-              <td>
+              <td data-label="Message">{m.message}</td>
+              <td data-label="Status">
                 <select value={m.status} onChange={(e) => setStatus(m.id, e.target.value as RequestStatus)}>
                   <option value="NEW">New</option>
                   <option value="CONTACTED">Read</option>
                   <option value="DONE">Done</option>
                 </select>
               </td>
-              <td>
+              <td className="admin-row-actions">
                 <button className="btn-link danger" onClick={() => remove(m.id)}>
                   Delete
                 </button>

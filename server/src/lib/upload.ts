@@ -33,3 +33,17 @@ export const upload = multer({
     cb(null, true);
   },
 });
+
+/** Delete an uploaded file (by its public /api/uploads/... URL) and its -thumb sibling, if any. Silently no-ops on anything it can't resolve. */
+export function deleteUploadedFile(url: string | null | undefined): void {
+  if (!url || !url.startsWith("/api/uploads/")) return;
+  const filename = url.slice("/api/uploads/".length);
+  const ext = path.extname(filename);
+  const base = path.basename(filename, ext);
+  for (const name of [filename, `${base}-thumb${ext}`]) {
+    const filePath = path.join(uploadsDir, name);
+    fs.unlink(filePath, () => {
+      /* ignore missing file */
+    });
+  }
+}

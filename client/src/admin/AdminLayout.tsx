@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
@@ -16,16 +17,18 @@ const LINKS = [
 
 export default function AdminLayout() {
   const { admin, logout } = useAuth();
+  const [navOpen, setNavOpen] = useState(false);
 
   return (
     <div className="admin-shell">
-      <aside className="admin-sidebar">
+      {navOpen && <div className="admin-nav-backdrop" onClick={() => setNavOpen(false)} />}
+      <aside className={`admin-sidebar${navOpen ? " open" : ""}`}>
         <div className="admin-brand">
           Vet<b>Art</b> <span>Admin</span>
         </div>
         <nav className="admin-nav">
           {LINKS.map((link) => (
-            <NavLink key={link.to} to={link.to} end={link.end} className={({ isActive }) => (isActive ? "active" : "")}>
+            <NavLink key={link.to} to={link.to} end={link.end} onClick={() => setNavOpen(false)} className={({ isActive }) => (isActive ? "active" : "")}>
               {link.label}
             </NavLink>
           ))}
@@ -36,7 +39,12 @@ export default function AdminLayout() {
       </aside>
       <div className="admin-main">
         <header className="admin-topbar">
-          <span>{admin?.email}</span>
+          <button className="admin-nav-toggle" aria-label="Toggle menu" onClick={() => setNavOpen((v) => !v)}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <span className="admin-topbar-email">{admin?.email}</span>
           <button className="btn btn-outline" onClick={logout}>
             Log Out
           </button>

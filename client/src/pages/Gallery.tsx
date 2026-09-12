@@ -49,7 +49,7 @@ export default function Gallery() {
                 onClick={() => setOpenId(isOpen ? null : cat.id)}
               >
                 {cover ? (
-                  <img src={resolveAssetUrl(cover.imageUrl)} alt={field(cat, "label")} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "inherit" }} />
+                  <img src={resolveAssetUrl(cover.thumbUrl || cover.imageUrl)} alt={field(cat, "label")} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "inherit" }} />
                 ) : (
                   <TileIcon size={34} />
                 )}
@@ -73,7 +73,7 @@ export default function Gallery() {
                   <div className="album-grid">
                     {cat.photos.map((p) => (
                       <button type="button" className="album-photo" key={p.id} onClick={() => setLightbox(resolveAssetUrl(p.imageUrl) || null)}>
-                        <img src={resolveAssetUrl(p.imageUrl)} alt="" />
+                        <img src={resolveAssetUrl(p.thumbUrl || p.imageUrl)} alt="" loading="lazy" />
                       </button>
                     ))}
                   </div>

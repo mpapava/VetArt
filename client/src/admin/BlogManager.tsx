@@ -4,7 +4,7 @@ import type { BlogPost } from "../api/types";
 
 const fields: FieldConfig[] = [
   { key: "slug", label: "Slug (URL, e.g. my-article)", type: "text" },
-  { key: "coverImageUrl", label: "Cover Image", type: "image" },
+  { key: "coverImageUrl", label: "Cover Image", type: "image", thumbKey: "coverThumbUrl" },
   { key: "tag", label: "Tag", type: "text", langed: true },
   { key: "title", label: "Title", type: "text", langed: true },
   { key: "excerpt", label: "Excerpt", type: "textarea", langed: true },
@@ -28,6 +28,7 @@ export default function BlogManager() {
         titleEn: "", titleKa: "", titleRu: "",
         excerptEn: "", excerptKa: "", excerptRu: "",
         bodyEn: "", bodyKa: "", bodyRu: "",
+        coverImageUrl: null, coverThumbUrl: null,
         published: true,
       }}
     />

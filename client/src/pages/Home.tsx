@@ -223,7 +223,7 @@ export default function Home() {
               <Link to={`/blog/${p.slug}`} className="blog-card" key={p.id}>
                 <div className="blog-card-media">
                   {p.coverImageUrl ? (
-                    <img src={resolveAssetUrl(p.coverImageUrl)} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    <img src={resolveAssetUrl(p.coverThumbUrl || p.coverImageUrl)} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                   ) : (
                     <ModernIcon size={30} />
                   )}

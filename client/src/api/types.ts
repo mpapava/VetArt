@@ -14,6 +14,7 @@ export interface Doctor {
   titleEn: string; titleKa: string; titleRu: string;
   descEn: string; descKa: string; descRu: string;
   photoUrl?: string | null;
+  photoThumbUrl?: string | null;
   active: boolean;
 }
 
@@ -21,6 +22,7 @@ export interface GalleryPhoto {
   id: string;
   categoryId: string;
   imageUrl: string;
+  thumbUrl?: string | null;
   order: number;
 }
 
@@ -47,6 +49,7 @@ export interface BlogListItem {
   titleEn: string; titleKa: string; titleRu: string;
   excerptEn: string; excerptKa: string; excerptRu: string;
   coverImageUrl?: string | null;
+  coverThumbUrl?: string | null;
   publishedAt: string;
 }
 

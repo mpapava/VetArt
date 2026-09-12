@@ -44,25 +44,25 @@ export default function AppointmentsManager() {
         <tbody>
           {list?.map((r) => (
             <tr key={r.id} className={r.status === "NEW" ? "admin-row-new" : ""}>
-              <td>{new Date(r.createdAt).toLocaleString()}</td>
-              <td>{r.name}</td>
-              <td>
+              <td data-label="Date">{new Date(r.createdAt).toLocaleString()}</td>
+              <td data-label="Name">{r.name}</td>
+              <td data-label="Phone">
                 <a href={`tel:${r.phone}`}>{r.phone}</a>
               </td>
-              <td>{r.petName}</td>
-              <td>{r.service}</td>
-              <td>
+              <td data-label="Pet">{r.petName}</td>
+              <td data-label="Service">{r.service}</td>
+              <td data-label="Preferred">
                 {r.preferredDate || "–"} {r.preferredTime || ""}
               </td>
-              <td>{r.notes || "–"}</td>
-              <td>
+              <td data-label="Notes">{r.notes || "–"}</td>
+              <td data-label="Status">
                 <select value={r.status} onChange={(e) => setStatus(r.id, e.target.value as RequestStatus)}>
                   <option value="NEW">New</option>
                   <option value="CONTACTED">Contacted</option>
                   <option value="DONE">Done</option>
                 </select>
               </td>
-              <td>
+              <td className="admin-row-actions">
                 <button className="btn-link danger" onClick={() => remove(r.id)}>
                   Delete
                 </button>

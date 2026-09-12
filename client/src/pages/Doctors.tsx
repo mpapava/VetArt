@@ -31,7 +31,7 @@ export default function Doctors() {
               <div className="doctor-card" key={doc.id}>
                 <div className="doctor-avatar">
                   {doc.photoUrl ? (
-                    <img src={resolveAssetUrl(doc.photoUrl)} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }} />
+                    <img src={resolveAssetUrl(doc.photoThumbUrl || doc.photoUrl)} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }} />
                   ) : (
                     <RoleIcon size={30} />
                   )}

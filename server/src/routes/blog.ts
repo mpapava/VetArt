@@ -2,6 +2,7 @@ import { Router } from "express";
 import { z } from "zod";
 import { prisma } from "../lib/prisma.js";
 import { ApiError } from "../middleware/errorHandler.js";
+import { deleteUploadedFile } from "../lib/upload.js";
 
 export const blogRouter = Router();
 
@@ -14,7 +15,7 @@ blogRouter.get("/", async (_req, res, next) => {
         id: true, slug: true, tagEn: true, tagKa: true, tagRu: true,
         titleEn: true, titleKa: true, titleRu: true,
         excerptEn: true, excerptKa: true, excerptRu: true,
-        coverImageUrl: true, publishedAt: true,
+        coverImageUrl: true, coverThumbUrl: true, publishedAt: true,
       },
     });
     res.json(rows);
@@ -59,6 +60,7 @@ const blogSchema = z.object({
   bodyKa: z.string().min(1),
   bodyRu: z.string().min(1),
   coverImageUrl: z.string().nullable().optional(),
+  coverThumbUrl: z.string().nullable().optional(),
   published: z.boolean(),
 });
 
@@ -86,7 +88,8 @@ adminBlogRouter.put("/:id", async (req, res, next) => {
 
 adminBlogRouter.delete("/:id", async (req, res, next) => {
   try {
-    await prisma.blogPost.delete({ where: { id: req.params.id } });
+    const post = await prisma.blogPost.delete({ where: { id: req.params.id } });
+    deleteUploadedFile(post.coverImageUrl);
     res.status(204).end();
   } catch (err) {
     next(err instanceof Error ? new ApiError(404, "Post not found") : err);

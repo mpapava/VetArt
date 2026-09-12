@@ -92,7 +92,7 @@ export const adminGalleryCategories = crud<GalleryCategoryAdmin>("gallery-catego
 
 export const adminListGalleryPhotos = (categoryId?: string) =>
   adminRequest<GalleryPhoto[]>(`/admin/gallery-photos${categoryId ? `?categoryId=${categoryId}` : ""}`);
-export const adminCreateGalleryPhoto = (data: { categoryId: string; imageUrl: string; order?: number }) =>
+export const adminCreateGalleryPhoto = (data: { categoryId: string; imageUrl: string; thumbUrl?: string; order?: number }) =>
   adminRequest<GalleryPhoto>("/admin/gallery-photos", { method: "POST", body: JSON.stringify(data) });
 export const adminDeleteGalleryPhoto = (id: string) =>
   adminRequest<void>(`/admin/gallery-photos/${id}`, { method: "DELETE" });
@@ -111,10 +111,11 @@ export const adminDeleteMessage = (id: string) =>
   adminRequest<void>(`/admin/messages/${id}`, { method: "DELETE" });
 
 // ---- Admin upload ----
-export const adminUpload = async (file: File): Promise<{ url: string }> => {
+export interface UploadResult { url: string; thumbUrl: string; }
+export const adminUpload = async (file: File): Promise<UploadResult> => {
   const form = new FormData();
   form.append("file", file);
-  return adminRequest<{ url: string }>("/admin/upload", { method: "POST", body: form });
+  return adminRequest<UploadResult>("/admin/upload", { method: "POST", body: form });
 };
 
 export const resolveAssetUrl = (url: string | null | undefined): string | undefined => {

@@ -2,6 +2,7 @@ import { Router } from "express";
 import { z } from "zod";
 import { prisma } from "../lib/prisma.js";
 import { ApiError } from "../middleware/errorHandler.js";
+import { deleteUploadedFile } from "../lib/upload.js";
 
 export const doctorsRouter = Router();
 
@@ -37,6 +38,7 @@ const doctorSchema = z.object({
   descKa: z.string().min(1),
   descRu: z.string().min(1),
   photoUrl: z.string().nullable().optional(),
+  photoThumbUrl: z.string().nullable().optional(),
   active: z.boolean(),
 });
 
@@ -62,7 +64,8 @@ adminDoctorsRouter.put("/:id", async (req, res, next) => {
 
 adminDoctorsRouter.delete("/:id", async (req, res, next) => {
   try {
-    await prisma.doctor.delete({ where: { id: req.params.id } });
+    const doctor = await prisma.doctor.delete({ where: { id: req.params.id } });
+    deleteUploadedFile(doctor.photoUrl);
     res.status(204).end();
   } catch (err) {
     next(err instanceof Error ? new ApiError(404, "Doctor not found") : err);
