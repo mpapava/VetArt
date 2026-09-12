@@ -17,12 +17,27 @@ export interface Doctor {
   active: boolean;
 }
 
-export interface GalleryItem {
+export interface GalleryPhoto {
   id: string;
+  categoryId: string;
+  imageUrl: string;
   order: number;
-  category: string;
+}
+
+export interface GalleryCategory {
+  id: string;
+  key: string;
+  order: number;
   labelEn: string; labelKa: string; labelRu: string;
-  imageUrl?: string | null;
+  photos: GalleryPhoto[];
+}
+
+export interface GalleryCategoryAdmin {
+  id: string;
+  key: string;
+  order: number;
+  labelEn: string; labelKa: string; labelRu: string;
+  _count: { photos: number };
 }
 
 export interface BlogListItem {

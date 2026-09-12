@@ -92,13 +92,13 @@ const doctors = [
   },
 ];
 
-const gallery = [
-  { order: 1, category: "dog", labelEn: "Dogs", labelKa: "ძაღლები", labelRu: "Собаки" },
-  { order: 2, category: "cat", labelEn: "Cats", labelKa: "კატები", labelRu: "Кошки" },
-  { order: 3, category: "bird", labelEn: "Birds", labelKa: "ფრინველები", labelRu: "Птицы" },
-  { order: 4, category: "exotic", labelEn: "Exotic Animals", labelKa: "ეგზოტიკური ცხოველები", labelRu: "Экзотические животные" },
-  { order: 5, category: "clinic", labelEn: "Clinic", labelKa: "კლინიკა", labelRu: "Клиника" },
-  { order: 6, category: "surgery", labelEn: "Surgery", labelKa: "ქირურგია", labelRu: "Хирургия" },
+const galleryCategories = [
+  { key: "dog", order: 1, labelEn: "Dogs", labelKa: "ძაღლები", labelRu: "Собаки" },
+  { key: "cat", order: 2, labelEn: "Cats", labelKa: "კატები", labelRu: "Кошки" },
+  { key: "bird", order: 3, labelEn: "Birds", labelKa: "ფრინველები", labelRu: "Птицы" },
+  { key: "exotic", order: 4, labelEn: "Exotic Animals", labelKa: "ეგზოტიკური ცხოველები", labelRu: "Экзотические животные" },
+  { key: "clinic", order: 5, labelEn: "Clinic", labelKa: "კლინიკა", labelRu: "Клиника" },
+  { key: "surgery", order: 6, labelEn: "Surgery", labelKa: "ქირურგია", labelRu: "Хирургия" },
 ];
 
 const blogPosts = [
@@ -366,9 +366,10 @@ async function main() {
   await prisma.doctor.createMany({ data: doctors });
   console.log(`Seeded ${doctors.length} doctors.`);
 
-  await prisma.galleryItem.deleteMany();
-  await prisma.galleryItem.createMany({ data: gallery });
-  console.log(`Seeded ${gallery.length} gallery items.`);
+  for (const cat of galleryCategories) {
+    await prisma.galleryCategory.upsert({ where: { key: cat.key }, create: cat, update: cat });
+  }
+  console.log(`Seeded ${galleryCategories.length} gallery categories.`);
 
   for (const post of blogPosts) {
     await prisma.blogPost.upsert({ where: { slug: post.slug }, create: post, update: post });

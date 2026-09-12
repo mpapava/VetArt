@@ -1,5 +1,5 @@
 import type {
-  Service, Doctor, GalleryItem, BlogListItem, BlogPost, Testimonial, Settings,
+  Service, Doctor, GalleryCategory, GalleryCategoryAdmin, GalleryPhoto, BlogListItem, BlogPost, Testimonial, Settings,
   PageContentRow, AppointmentRequest, ContactMessage, RequestStatus,
 } from "./types";
 
@@ -31,7 +31,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 export const getContent = <T,>(key: string) => request<PageContentRow<T>>(`/content/${key}`);
 export const getServices = () => request<Service[]>("/services");
 export const getDoctors = () => request<Doctor[]>("/doctors");
-export const getGallery = () => request<GalleryItem[]>("/gallery");
+export const getGallery = () => request<GalleryCategory[]>("/gallery");
 export const getBlogList = () => request<BlogListItem[]>("/blog");
 export const getBlogPost = (slug: string) => request<BlogPost>(`/blog/${slug}`);
 export const getTestimonials = () => request<Testimonial[]>("/testimonials");
@@ -84,9 +84,18 @@ function crud<T extends { id: string }>(resource: string) {
 
 export const adminServices = crud<Service>("services");
 export const adminDoctors = crud<Doctor>("doctors");
-export const adminGallery = crud<GalleryItem>("gallery");
 export const adminBlog = crud<BlogPost>("blog");
 export const adminTestimonials = crud<Testimonial>("testimonials");
+
+// ---- Admin gallery: categories (albums) + photos ----
+export const adminGalleryCategories = crud<GalleryCategoryAdmin>("gallery-categories");
+
+export const adminListGalleryPhotos = (categoryId?: string) =>
+  adminRequest<GalleryPhoto[]>(`/admin/gallery-photos${categoryId ? `?categoryId=${categoryId}` : ""}`);
+export const adminCreateGalleryPhoto = (data: { categoryId: string; imageUrl: string; order?: number }) =>
+  adminRequest<GalleryPhoto>("/admin/gallery-photos", { method: "POST", body: JSON.stringify(data) });
+export const adminDeleteGalleryPhoto = (id: string) =>
+  adminRequest<void>(`/admin/gallery-photos/${id}`, { method: "DELETE" });
 
 // ---- Admin messages / appointments ----
 export const adminGetAppointments = () => adminRequest<AppointmentRequest[]>("/admin/appointments");

@@ -7,7 +7,16 @@
       "Bash(\"/e/Program Files/PuTTY/pscp.exe\" -pw 'Lepape123' -batch /tmp/vetart-server-fix.tar.gz root@161.97.117.150:/var/www/vetart/server-fix.tar.gz)",
       "Bash(\"/e/Program Files/PuTTY/plink.exe\" -ssh -batch -pw 'Lepape123' root@161.97.117.150 \"cd /var/www/vetart/server && tar -xzf ../server-fix.tar.gz && rm ../server-fix.tar.gz && npm run build 2>&1 | tail -10 && pm2 restart vetart-api && sleep 1 && curl -s http://localhost:3003/api/health\")",
       "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\);process.stdin.on\\('end',\\(\\)=>{const o=JSON.parse\\(d\\);console.log\\('after partial PUT:',o.order,o.category\\)}\\)\")",
-      "Bash(\"/e/Program Files/PuTTY/plink.exe\" -ssh -batch -pw 'Lepape123' root@161.97.117.150 \"rm -f /var/www/vetart/server/uploads/5fdefdc3-ee03-4d3b-a11f-67bd70182592.png\")"
+      "Bash(\"/e/Program Files/PuTTY/plink.exe\" -ssh -batch -pw 'Lepape123' root@161.97.117.150 \"rm -f /var/www/vetart/server/uploads/5fdefdc3-ee03-4d3b-a11f-67bd70182592.png\")",
+      "Bash(npx prisma *)",
+      "Bash(tar --exclude=node_modules --exclude=dist --exclude=.env --exclude=uploads -czf /tmp/vetart-server-albums.tar.gz src prisma package.json tsconfig.json)",
+      "Bash(\"/e/Program Files/PuTTY/pscp.exe\" -pw 'Lepape123' -batch /tmp/vetart-server-albums.tar.gz root@161.97.117.150:/var/www/vetart/server-albums.tar.gz)",
+      "Bash(\"/e/Program Files/PuTTY/plink.exe\" -ssh -batch -pw 'Lepape123' root@161.97.117.150 \"cd /var/www/vetart/server && tar -xzf ../server-albums.tar.gz && rm ../server-albums.tar.gz && npx prisma generate 2>&1 | tail -5 && npx prisma db push --accept-data-loss 2>&1 | tail -20\")",
+      "Bash(\"/e/Program Files/PuTTY/plink.exe\" -ssh -batch -pw 'Lepape123' root@161.97.117.150 \"cd /var/www/vetart/server && npm run build 2>&1 | tail -10 && npx tsx prisma/seed.ts 2>&1 | tail -20\")",
+      "Bash(\"/e/Program Files/PuTTY/plink.exe\" -ssh -batch -pw 'Lepape123' root@161.97.117.150 \"cd /var/www/vetart/server && pm2 restart vetart-api && sleep 1 && curl -s http://localhost:3003/api/health\")",
+      "Bash(\"/e/Program Files/PuTTY/plink.exe\" -ssh -batch -pw 'Lepape123' root@161.97.117.150 \"cd /var/www/papava.ge/projects/vetart/assets && rm -f index-CxPROrSL.js index-7YD6vGOp.css && ls\")",
+      "Bash(curl -s -o /dev/null -w \"gallery page: %{http_code}\\\\n\" https://www.papava.ge/projects/vetart/gallery)",
+      "Bash(curl -s https://www.papava.ge/projects/vetart/api/gallery)"
     ]
   }
 }

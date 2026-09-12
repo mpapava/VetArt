@@ -3,62 +3,121 @@ import { z } from "zod";
 import { prisma } from "../lib/prisma.js";
 import { ApiError } from "../middleware/errorHandler.js";
 
+// ---- Public: categories with their photos nested ----
 export const galleryRouter = Router();
 
 galleryRouter.get("/", async (_req, res, next) => {
   try {
-    const rows = await prisma.galleryItem.findMany({ orderBy: { order: "asc" } });
+    const rows = await prisma.galleryCategory.findMany({
+      orderBy: { order: "asc" },
+      include: { photos: { orderBy: { order: "asc" } } },
+    });
     res.json(rows);
   } catch (err) {
     next(err);
   }
 });
 
-export const adminGalleryRouter = Router();
+// ---- Admin: categories ----
+export const adminGalleryCategoriesRouter = Router();
 
-adminGalleryRouter.get("/", async (_req, res, next) => {
+adminGalleryCategoriesRouter.get("/", async (_req, res, next) => {
   try {
-    const rows = await prisma.galleryItem.findMany({ orderBy: { order: "asc" } });
+    const rows = await prisma.galleryCategory.findMany({
+      orderBy: { order: "asc" },
+      include: { _count: { select: { photos: true } } },
+    });
     res.json(rows);
   } catch (err) {
     next(err);
   }
 });
 
-const gallerySchema = z.object({
+const categorySchema = z.object({
+  key: z.string().min(1).regex(/^[a-z0-9-]+$/, "Key must be lowercase letters, numbers, and hyphens only"),
   order: z.number().int(),
-  category: z.string().min(1),
   labelEn: z.string().min(1),
   labelKa: z.string().min(1),
   labelRu: z.string().min(1),
-  imageUrl: z.string().nullable().optional(),
 });
 
-adminGalleryRouter.post("/", async (req, res, next) => {
+adminGalleryCategoriesRouter.post("/", async (req, res, next) => {
   try {
-    const data = gallerySchema.parse({ order: 0, ...req.body });
-    const row = await prisma.galleryItem.create({ data });
+    const data = categorySchema.parse({ order: 0, ...req.body });
+    const existing = await prisma.galleryCategory.findUnique({ where: { key: data.key } });
+    if (existing) throw new ApiError(409, "A category with this key already exists");
+    const row = await prisma.galleryCategory.create({ data });
     res.status(201).json(row);
   } catch (err) {
     next(err);
   }
 });
 
-adminGalleryRouter.put("/:id", async (req, res, next) => {
+adminGalleryCategoriesRouter.put("/:id", async (req, res, next) => {
   try {
-    const data = gallerySchema.partial().parse(req.body);
-    const row = await prisma.galleryItem.update({ where: { id: req.params.id }, data });
+    const data = categorySchema.partial().parse(req.body);
+    const row = await prisma.galleryCategory.update({ where: { id: req.params.id }, data });
     res.json(row);
   } catch (err) {
     next(err);
   }
 });
 
-adminGalleryRouter.delete("/:id", async (req, res, next) => {
+adminGalleryCategoriesRouter.delete("/:id", async (req, res, next) => {
   try {
-    await prisma.galleryItem.delete({ where: { id: req.params.id } });
+    await prisma.galleryCategory.delete({ where: { id: req.params.id } });
     res.status(204).end();
   } catch (err) {
-    next(err instanceof Error ? new ApiError(404, "Gallery item not found") : err);
+    next(err instanceof Error ? new ApiError(404, "Category not found") : err);
+  }
+});
+
+// ---- Admin: photos (bulk-addable to any category) ----
+export const adminGalleryPhotosRouter = Router();
+
+adminGalleryPhotosRouter.get("/", async (req, res, next) => {
+  try {
+    const where = req.query.categoryId ? { categoryId: String(req.query.categoryId) } : {};
+    const rows = await prisma.galleryPhoto.findMany({ where, orderBy: [{ categoryId: "asc" }, { order: "asc" }] });
+    res.json(rows);
+  } catch (err) {
+    next(err);
+  }
+});
+
+const photoSchema = z.object({
+  categoryId: z.string().min(1),
+  imageUrl: z.string().min(1),
+  order: z.number().int(),
+});
+
+adminGalleryPhotosRouter.post("/", async (req, res, next) => {
+  try {
+    const data = photoSchema.parse({ order: 0, ...req.body });
+    const category = await prisma.galleryCategory.findUnique({ where: { id: data.categoryId } });
+    if (!category) throw new ApiError(400, "Unknown category");
+    const row = await prisma.galleryPhoto.create({ data });
+    res.status(201).json(row);
+  } catch (err) {
+    next(err);
+  }
+});
+
+adminGalleryPhotosRouter.put("/:id", async (req, res, next) => {
+  try {
+    const data = photoSchema.partial().parse(req.body);
+    const row = await prisma.galleryPhoto.update({ where: { id: req.params.id }, data });
+    res.json(row);
+  } catch (err) {
+    next(err);
+  }
+});
+
+adminGalleryPhotosRouter.delete("/:id", async (req, res, next) => {
+  try {
+    await prisma.galleryPhoto.delete({ where: { id: req.params.id } });
+    res.status(204).end();
+  } catch (err) {
+    next(err instanceof Error ? new ApiError(404, "Photo not found") : err);
   }
 });

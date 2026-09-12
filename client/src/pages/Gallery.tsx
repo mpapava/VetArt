@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useLang, useField, usePageData } from "../i18n/LangContext";
 import { useApi } from "../api/hooks";
 import { getContent, getGallery, resolveAssetUrl } from "../api/client";
@@ -16,7 +17,10 @@ export default function Gallery() {
   const settings = useSettings();
   const { data: row } = useApi(() => getContent<GalleryPageContent>("gallery"), []);
   const content = usePageData(row);
-  const { data: items } = useApi(() => getGallery(), []);
+  const { data: categories } = useApi(() => getGallery(), []);
+
+  const [openId, setOpenId] = useState<string | null>(null);
+  const [lightbox, setLightbox] = useState<string | null>(null);
 
   if (!content) return null;
 
@@ -26,22 +30,51 @@ export default function Gallery() {
 
       <section>
         <div className="gallery-grid">
-          {items?.map((item) => {
-            const TileIcon = CATEGORY_ICONS[item.category] || ClinicIcon;
+          {categories?.map((cat) => {
+            const TileIcon = CATEGORY_ICONS[cat.key] || ClinicIcon;
+            const cover = cat.photos[0];
+            const isOpen = openId === cat.id;
             return (
-              <div className="gallery-tile" key={item.id}>
-                {item.imageUrl ? (
-                  <img src={resolveAssetUrl(item.imageUrl)} alt={field(item, "label")} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "inherit" }} />
+              <button
+                type="button"
+                className={`gallery-tile${isOpen ? " is-open" : ""}`}
+                key={cat.id}
+                onClick={() => setOpenId(isOpen ? null : cat.id)}
+              >
+                {cover ? (
+                  <img src={resolveAssetUrl(cover.imageUrl)} alt={field(cat, "label")} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "inherit" }} />
                 ) : (
-                  <>
-                    <TileIcon size={34} />
-                    <span>{field(item, "label")}</span>
-                  </>
+                  <TileIcon size={34} />
                 )}
-              </div>
+                {!cover && <span>{field(cat, "label")}</span>}
+                {cover && <span className="gallery-tile-caption">{field(cat, "label")} &middot; {cat.photos.length}</span>}
+              </button>
             );
           })}
         </div>
+
+        {openId &&
+          (() => {
+            const cat = categories?.find((c) => c.id === openId);
+            if (!cat) return null;
+            return (
+              <div className="album-panel">
+                <h3>{field(cat, "label")}</h3>
+                {cat.photos.length === 0 ? (
+                  <p className="admin-empty">No photos in this album yet.</p>
+                ) : (
+                  <div className="album-grid">
+                    {cat.photos.map((p) => (
+                      <button type="button" className="album-photo" key={p.id} onClick={() => setLightbox(resolveAssetUrl(p.imageUrl) || null)}>
+                        <img src={resolveAssetUrl(p.imageUrl)} alt="" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+
         <p className="appt-note" style={{ marginTop: 28, maxWidth: 640 }}>
           {content.note}
         </p>
@@ -51,6 +84,12 @@ export default function Gallery() {
           </a>
         )}
       </section>
+
+      {lightbox && (
+        <div className="lightbox" onClick={() => setLightbox(null)}>
+          <img src={lightbox} alt="" />
+        </div>
+      )}
     </>
   );
 }

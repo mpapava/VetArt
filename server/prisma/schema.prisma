@@ -47,16 +47,26 @@ model Doctor {
   updatedAt DateTime @updatedAt
 }
 
-model GalleryItem {
+model GalleryCategory {
   id        String   @id @default(cuid())
+  key       String   @unique
   order     Int      @default(0)
-  category  String
   labelEn   String
   labelKa   String
   labelRu   String
-  imageUrl  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  photos GalleryPhoto[]
+}
+
+model GalleryPhoto {
+  id         String          @id @default(cuid())
+  categoryId String
+  category   GalleryCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  imageUrl   String
+  order      Int             @default(0)
+  createdAt  DateTime        @default(now())
 }
 
 model BlogPost {

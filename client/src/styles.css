@@ -408,8 +408,33 @@ footer { border-top: 1px solid var(--border); padding: 40px 24px; }
 
 /* Gallery */
 .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; }
-.gallery-tile { aspect-ratio: 1; border-radius: var(--radius); background: var(--bg-elevated); border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--accent); }
+.gallery-tile {
+  aspect-ratio: 1; border-radius: var(--radius); background: var(--bg-elevated); border: 1px solid var(--border);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--accent);
+  position: relative; overflow: hidden; padding: 0; font-family: inherit; cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.gallery-tile:hover { border-color: var(--accent); transform: translateY(-2px); }
+.gallery-tile.is-open { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
 .gallery-tile span { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+.gallery-tile-caption {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 8px 10px;
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,0.65));
+  color: #fff !important; text-align: left; font-size: 12.5px !important;
+}
+
+.album-panel { margin-top: 28px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px; }
+.album-panel h3 { margin: 0 0 16px; font-size: 17px; font-weight: 700; }
+.album-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+.album-photo { padding: 0; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; cursor: pointer; background: none; aspect-ratio: 1; }
+.album-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.album-photo:hover { border-color: var(--accent); }
+
+.lightbox {
+  position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.85);
+  display: flex; align-items: center; justify-content: center; padding: 32px; cursor: zoom-out;
+}
+.lightbox img { max-width: 100%; max-height: 100%; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
 
 /* Appointment steps + form */
 .steps-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 0 0 48px; }
