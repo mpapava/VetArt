@@ -5,6 +5,7 @@ if (!secret) throw new Error("JWT_SECRET environment variable is required");
 
 export interface TokenPayload {
   adminId: string;
+  role: "ADMIN" | "VIEWER";
 }
 
 export function signToken(payload: TokenPayload): string {

@@ -54,12 +54,14 @@ async function adminRequest<T>(path: string, options: RequestInit = {}): Promise
   });
 }
 
+export type AdminRole = "ADMIN" | "VIEWER";
+
 export const adminLogin = (email: string, password: string) =>
-  request<{ token: string; admin: { id: string; email: string } }>("/admin/auth/login", {
+  request<{ token: string; admin: { id: string; email: string; role: AdminRole } }>("/admin/auth/login", {
     method: "POST",
     body: JSON.stringify({ email, password }),
   });
-export const adminMe = () => adminRequest<{ id: string; email: string }>("/admin/auth/me");
+export const adminMe = () => adminRequest<{ id: string; email: string; role: AdminRole }>("/admin/auth/me");
 
 // ---- Admin content ----
 export const adminGetAllContent = () => adminRequest<PageContentRow[]>("/admin/content");

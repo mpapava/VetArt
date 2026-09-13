@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { adminGetAllContent, adminPutContent } from "../api/client";
 import type { PageContentRow } from "../api/types";
+import { useAuth } from "./AuthContext";
 
 const PAGES = ["home", "about", "doctors", "gallery", "blog", "contact", "appointment"];
 const LANGS: { suffix: "En" | "Ka" | "Ru"; label: string }[] = [
@@ -87,6 +88,7 @@ function FieldEditor({ objKey, value, onChange }: { objKey: string; value: unkno
 }
 
 export default function ContentEditor() {
+  const { isViewer } = useAuth();
   const [rows, setRows] = useState<Record<string, PageContentRow> | null>(null);
   const [page, setPage] = useState("home");
   const [lang, setLang] = useState<"En" | "Ka" | "Ru">("En");
@@ -140,7 +142,10 @@ export default function ContentEditor() {
 
   return (
     <div>
-      <h1 className="admin-h1">Page Content</h1>
+      <div className="admin-header-row">
+        <h1 className="admin-h1">Page Content</h1>
+        {isViewer && <span className="admin-viewer-note">Demo account — read only</span>}
+      </div>
       <div className="admin-lang-tabs" style={{ marginBottom: 8 }}>
         {PAGES.map((p) => (
           <button key={p} type="button" className={page === p ? "active" : ""} onClick={() => setPage(p)}>
@@ -160,19 +165,21 @@ export default function ContentEditor() {
         {Object.keys(data).length === 0 && <p className="admin-empty">No fields for this page/language yet.</p>}
         <div className="admin-form-grid">
           {Object.entries(data).map(([key, value]) => (
-            <div className={`field full`} key={key}>
+            <div className={`field full${isViewer ? " admin-readonly" : ""}`} key={key}>
               <label>{prettify(key)}</label>
-              <FieldEditor objKey={key} value={value} onChange={(v) => updateField(key, v)} />
+              <FieldEditor objKey={key} value={value} onChange={(v) => !isViewer && updateField(key, v)} />
             </div>
           ))}
         </div>
         {error && <div className="admin-error">{error}</div>}
         {saved && <div className="admin-success">Saved.</div>}
-        <div className="admin-form-actions">
-          <button className="btn btn-primary" onClick={handleSave} disabled={saving}>
-            {saving ? "Saving…" : "Save"}
-          </button>
-        </div>
+        {!isViewer && (
+          <div className="admin-form-actions">
+            <button className="btn btn-primary" onClick={handleSave} disabled={saving}>
+              {saving ? "Saving…" : "Save"}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

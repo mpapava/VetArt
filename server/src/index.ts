@@ -12,7 +12,7 @@ import { settingsRouter, adminSettingsRouter } from "./routes/settings.js";
 import { appointmentsRouter, adminAppointmentsRouter } from "./routes/appointments.js";
 import { messagesRouter, adminMessagesRouter } from "./routes/messages.js";
 import { uploadRouter } from "./routes/upload.js";
-import { requireAuth } from "./middleware/auth.js";
+import { requireAuth, blockViewerWrites, blockViewerEntirely } from "./middleware/auth.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { uploadsDir } from "./lib/upload.js";
 
@@ -38,17 +38,18 @@ app.use("/api/messages", messagesRouter);
 app.use("/api/admin/auth", authRouter);
 
 // Admin routes (JWT-protected)
-app.use("/api/admin/content", requireAuth, adminContentRouter);
-app.use("/api/admin/services", requireAuth, adminServicesRouter);
-app.use("/api/admin/doctors", requireAuth, adminDoctorsRouter);
-app.use("/api/admin/gallery-categories", requireAuth, adminGalleryCategoriesRouter);
-app.use("/api/admin/gallery-photos", requireAuth, adminGalleryPhotosRouter);
-app.use("/api/admin/blog", requireAuth, adminBlogRouter);
-app.use("/api/admin/testimonials", requireAuth, adminTestimonialsRouter);
-app.use("/api/admin/settings", requireAuth, adminSettingsRouter);
-app.use("/api/admin/appointments", requireAuth, adminAppointmentsRouter);
-app.use("/api/admin/messages", requireAuth, adminMessagesRouter);
-app.use("/api/admin/upload", requireAuth, uploadRouter);
+app.use("/api/admin/content", requireAuth, blockViewerWrites, adminContentRouter);
+app.use("/api/admin/services", requireAuth, blockViewerWrites, adminServicesRouter);
+app.use("/api/admin/doctors", requireAuth, blockViewerWrites, adminDoctorsRouter);
+app.use("/api/admin/gallery-categories", requireAuth, blockViewerWrites, adminGalleryCategoriesRouter);
+app.use("/api/admin/gallery-photos", requireAuth, blockViewerWrites, adminGalleryPhotosRouter);
+app.use("/api/admin/blog", requireAuth, blockViewerWrites, adminBlogRouter);
+app.use("/api/admin/testimonials", requireAuth, blockViewerWrites, adminTestimonialsRouter);
+app.use("/api/admin/settings", requireAuth, blockViewerWrites, adminSettingsRouter);
+// Real customer PII — off-limits to the demo VIEWER account entirely.
+app.use("/api/admin/appointments", requireAuth, blockViewerEntirely, adminAppointmentsRouter);
+app.use("/api/admin/messages", requireAuth, blockViewerEntirely, adminMessagesRouter);
+app.use("/api/admin/upload", requireAuth, blockViewerWrites, uploadRouter);
 
 app.use(errorHandler);
 

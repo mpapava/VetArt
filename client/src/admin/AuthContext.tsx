@@ -1,14 +1,16 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { adminLogin, adminMe, getToken, setToken, clearToken } from "../api/client";
+import { adminLogin, adminMe, getToken, setToken, clearToken, type AdminRole } from "../api/client";
 
 interface AdminInfo {
   id: string;
   email: string;
+  role: AdminRole;
 }
 
 interface AuthContextValue {
   admin: AdminInfo | null;
   loading: boolean;
+  isViewer: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
 }
@@ -44,7 +46,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setAdmin(null);
   }
 
-  return <AuthContext.Provider value={{ admin, loading, login, logout }}>{children}</AuthContext.Provider>;
+  const isViewer = admin?.role === "VIEWER";
+
+  return (
+    <AuthContext.Provider value={{ admin, loading, isViewer, login, logout }}>{children}</AuthContext.Provider>
+  );
 }
 
 export function useAuth(): AuthContextValue {

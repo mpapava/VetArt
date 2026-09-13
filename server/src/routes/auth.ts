@@ -22,8 +22,8 @@ authRouter.post("/login", async (req, res, next) => {
     const valid = await bcrypt.compare(data.password, admin.passwordHash);
     if (!valid) throw new ApiError(401, "Invalid email or password");
 
-    const token = signToken({ adminId: admin.id });
-    res.json({ token, admin: { id: admin.id, email: admin.email } });
+    const token = signToken({ adminId: admin.id, role: admin.role });
+    res.json({ token, admin: { id: admin.id, email: admin.email, role: admin.role } });
   } catch (err) {
     next(err);
   }
@@ -33,7 +33,7 @@ authRouter.get("/me", requireAuth, async (req: AuthedRequest, res, next) => {
   try {
     const admin = await prisma.adminUser.findUnique({ where: { id: req.adminId } });
     if (!admin) throw new ApiError(404, "Admin not found");
-    res.json({ id: admin.id, email: admin.email });
+    res.json({ id: admin.id, email: admin.email, role: admin.role });
   } catch (err) {
     next(err);
   }

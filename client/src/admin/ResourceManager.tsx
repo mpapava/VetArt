@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useApi } from "../api/hooks";
 import { adminUpload, resolveAssetUrl } from "../api/client";
+import { useAuth } from "./AuthContext";
 
 export interface FieldConfig {
   key: string;
@@ -40,6 +41,7 @@ const LANGS: { suffix: "En" | "Ka" | "Ru"; label: string }[] = [
 ];
 
 export default function ResourceManager<T extends { id: string }>({ title, api, fields, columns, emptyItem }: Props<T>) {
+  const { isViewer } = useAuth();
   const { data: items, loading, error: loadError } = useApi(() => api.list(), [title]);
   const [refreshKey, setRefreshKey] = useState(0);
   const [items2, setItems2] = useState<T[] | null>(null);
@@ -121,14 +123,15 @@ export default function ResourceManager<T extends { id: string }>({ title, api, 
     <div key={refreshKey}>
       <div className="admin-header-row">
         <h1 className="admin-h1">{title}</h1>
-        {!editing && (
+        {!editing && !isViewer && (
           <button className="btn btn-primary" onClick={startCreate}>
             + Add New
           </button>
         )}
+        {isViewer && <span className="admin-viewer-note">Demo account — read only</span>}
       </div>
 
-      {editing && (
+      {editing && !isViewer && (
         <div className="admin-form-card">
           {fields.some((f) => f.langed) && (
             <div className="admin-lang-tabs">
@@ -257,12 +260,18 @@ export default function ResourceManager<T extends { id: string }>({ title, api, 
                   <td key={c.key} data-label={c.label}>{String((item as Record<string, unknown>)[c.key] ?? "")}</td>
                 ))}
                 <td className="admin-row-actions" data-label="">
-                  <button className="btn-link" onClick={() => startEdit(item)}>
-                    Edit
-                  </button>
-                  <button className="btn-link danger" onClick={() => handleDelete(item)}>
-                    Delete
-                  </button>
+                  {isViewer ? (
+                    <span className="admin-viewer-note">read only</span>
+                  ) : (
+                    <>
+                      <button className="btn-link" onClick={() => startEdit(item)}>
+                        Edit
+                      </button>
+                      <button className="btn-link danger" onClick={() => handleDelete(item)}>
+                        Delete
+                      </button>
+                    </>
+                  )}
                 </td>
               </tr>
             ))}

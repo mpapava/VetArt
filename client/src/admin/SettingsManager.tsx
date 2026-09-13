@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { adminGetSettings, adminPutSettings } from "../api/client";
 import type { Settings } from "../api/types";
+import { useAuth } from "./AuthContext";
 
 const FIELDS: { key: keyof Settings; label: string }[] = [
   { key: "phone", label: "Phone (display, e.g. 555 63 17 87)" },
@@ -16,6 +17,7 @@ const FIELDS: { key: keyof Settings; label: string }[] = [
 ];
 
 export default function SettingsManager() {
+  const { isViewer } = useAuth();
   const [settings, setSettings] = useState<Settings | null>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -45,7 +47,10 @@ export default function SettingsManager() {
 
   return (
     <div>
-      <h1 className="admin-h1">Settings</h1>
+      <div className="admin-header-row">
+        <h1 className="admin-h1">Settings</h1>
+        {isViewer && <span className="admin-viewer-note">Demo account — read only</span>}
+      </div>
       <div className="admin-form-card">
         <div className="admin-form-grid">
           {FIELDS.map((f) => (
@@ -53,6 +58,7 @@ export default function SettingsManager() {
               <label>{f.label}</label>
               <input
                 value={settings[f.key] ?? ""}
+                disabled={isViewer}
                 onChange={(e) => setSettings({ ...settings, [f.key]: e.target.value })}
               />
             </div>
@@ -60,11 +66,13 @@ export default function SettingsManager() {
         </div>
         {error && <div className="admin-error">{error}</div>}
         {saved && <div className="admin-success">Saved.</div>}
-        <div className="admin-form-actions">
-          <button className="btn btn-primary" onClick={handleSave} disabled={saving}>
-            {saving ? "Saving…" : "Save"}
-          </button>
-        </div>
+        {!isViewer && (
+          <div className="admin-form-actions">
+            <button className="btn btn-primary" onClick={handleSave} disabled={saving}>
+              {saving ? "Saving…" : "Save"}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

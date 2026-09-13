@@ -82,6 +82,11 @@
 .admin-error { color: #e0685a; font-size: 13px; margin-top: 12px; }
 .admin-success { color: var(--accent); font-size: 13px; margin-top: 12px; }
 
+.admin-viewer-badge { display: inline-block; margin-left: 10px; padding: 3px 9px; font-size: 11px; font-weight: 700; letter-spacing: 0.03em; color: var(--accent-ink); background: var(--accent); border-radius: 999px; }
+.admin-viewer-note { font-size: 12.5px; color: var(--text-dim); font-style: italic; }
+.admin-readonly { opacity: 0.65; pointer-events: none; }
+.admin-viewer-banner { background: rgba(139,209,58,0.1); border: 1px solid var(--accent); color: var(--text); font-size: 13.5px; line-height: 1.55; padding: 12px 16px; border-radius: 10px; margin-bottom: 20px; }
+
 .admin-lang-tabs { display: inline-flex; gap: 4px; background: rgba(0,0,0,0.16); border: 1px solid var(--border); border-radius: 999px; padding: 4px; margin-bottom: 18px; flex-wrap: wrap; }
 .admin-lang-tabs button { font-family: inherit; font-size: 12.5px; font-weight: 700; color: var(--text-dim); background: none; border: 0; padding: 7px 14px; border-radius: 999px; cursor: pointer; }
 .admin-lang-tabs button.active { background: var(--accent); color: var(--accent-ink); }

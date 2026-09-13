@@ -10,14 +10,15 @@ const LINKS = [
   { to: "/admin/gallery", label: "Gallery" },
   { to: "/admin/blog", label: "Blog Posts" },
   { to: "/admin/testimonials", label: "Testimonials" },
-  { to: "/admin/appointments", label: "Appointment Requests" },
-  { to: "/admin/messages", label: "Messages" },
+  { to: "/admin/appointments", label: "Appointment Requests", hideForViewer: true },
+  { to: "/admin/messages", label: "Messages", hideForViewer: true },
   { to: "/admin/settings", label: "Settings" },
 ];
 
 export default function AdminLayout() {
-  const { admin, logout } = useAuth();
+  const { admin, isViewer, logout } = useAuth();
   const [navOpen, setNavOpen] = useState(false);
+  const links = LINKS.filter((link) => !(link.hideForViewer && isViewer));
 
   return (
     <div className="admin-shell">
@@ -27,7 +28,7 @@ export default function AdminLayout() {
           Vet<b>Art</b> <span>Admin</span>
         </div>
         <nav className="admin-nav">
-          {LINKS.map((link) => (
+          {links.map((link) => (
             <NavLink key={link.to} to={link.to} end={link.end} onClick={() => setNavOpen(false)} className={({ isActive }) => (isActive ? "active" : "")}>
               {link.label}
             </NavLink>
@@ -44,7 +45,10 @@ export default function AdminLayout() {
             <span></span>
             <span></span>
           </button>
-          <span className="admin-topbar-email">{admin?.email}</span>
+          <span className="admin-topbar-email">
+            {admin?.email}
+            {isViewer && <span className="admin-viewer-badge">Demo · read-only</span>}
+          </span>
           <button className="btn btn-outline" onClick={logout}>
             Log Out
           </button>

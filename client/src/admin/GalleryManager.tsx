@@ -3,6 +3,7 @@ import ResourceManager, { type FieldConfig } from "./ResourceManager";
 import { adminGalleryCategories, adminListGalleryPhotos, adminCreateGalleryPhoto, adminDeleteGalleryPhoto, adminUpload, resolveAssetUrl } from "../api/client";
 import { useApi } from "../api/hooks";
 import type { GalleryCategoryAdmin, GalleryPhoto } from "../api/types";
+import { useAuth } from "./AuthContext";
 
 const categoryFields: FieldConfig[] = [
   { key: "key", label: "Key (e.g. dog, cat, bird)", type: "text" },
@@ -28,6 +29,7 @@ function CategoriesTab() {
 }
 
 function PhotosTab() {
+  const { isViewer } = useAuth();
   const { data: categories } = useApi(() => adminGalleryCategories.list(), []);
   const [selected, setSelected] = useState<string>("");
   const activeCategoryId = selected || categories?.[0]?.id || "";
@@ -70,7 +72,10 @@ function PhotosTab() {
 
   return (
     <div key={refreshTick}>
-      <h1 className="admin-h1">Gallery Photos</h1>
+      <div className="admin-header-row">
+        <h1 className="admin-h1">Gallery Photos</h1>
+        {isViewer && <span className="admin-viewer-note">Demo account — read only</span>}
+      </div>
       <div className="admin-form-card">
         <div className="admin-form-grid">
           <div className="field">
@@ -83,11 +88,13 @@ function PhotosTab() {
               ))}
             </select>
           </div>
-          <div className="field">
-            <label>Add photos (select multiple at once)</label>
-            <input type="file" accept="image/*" multiple disabled={uploading || !activeCategoryId} onChange={(e) => handleFiles(e.target.files)} />
-            {uploading && <span className="admin-uploading">Uploading…</span>}
-          </div>
+          {!isViewer && (
+            <div className="field">
+              <label>Add photos (select multiple at once)</label>
+              <input type="file" accept="image/*" multiple disabled={uploading || !activeCategoryId} onChange={(e) => handleFiles(e.target.files)} />
+              {uploading && <span className="admin-uploading">Uploading…</span>}
+            </div>
+          )}
         </div>
         {error && <div className="admin-error">{error}</div>}
       </div>
@@ -97,9 +104,11 @@ function PhotosTab() {
         {shown?.map((p) => (
           <div className="admin-photo-tile" key={p.id}>
             <img src={resolveAssetUrl(p.thumbUrl || p.imageUrl)} alt="" />
-            <button className="btn-link danger" onClick={() => handleDelete(p.id)}>
-              Delete
-            </button>
+            {!isViewer && (
+              <button className="btn-link danger" onClick={() => handleDelete(p.id)}>
+                Delete
+              </button>
+            )}
           </div>
         ))}
         {shown?.length === 0 && <p className="admin-empty">No photos in this album yet.</p>}
